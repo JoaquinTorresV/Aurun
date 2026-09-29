@@ -1,13 +1,24 @@
-// ===== LinkedAI Landing — form handling + Meta Pixel Lead event =====
+// ===== Aurun Landing — envío de leads + Meta Pixel =====
+
+// 👉 Pega aquí la URL del webhook de n8n (en el servidor de Aurun).
+//    Mientras esté vacío, el formulario funciona igual pero no envía a ningún lado.
+const WEBHOOK_URL = "";
+
 (function () {
   const form = document.getElementById('strategyForm');
   const success = document.getElementById('formSuccess');
   if (!form) return;
 
-  form.addEventListener('submit', function (e) {
+  // Lee una cookie (para adjuntar _fbp y mejorar el match del pixel más adelante)
+  function getCookie(name) {
+    const m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return m ? m.pop() : '';
+  }
+
+  form.addEventListener('submit', async function (e) {
     e.preventDefault();
 
-    // Validación básica de campos requeridos
+    // Validación de campos requeridos
     const required = form.querySelectorAll('[required]');
     let valid = true;
     required.forEach((field) => {
@@ -22,18 +33,37 @@
 
     const data = Object.fromEntries(new FormData(form).entries());
 
-    // ===== Evento de conversión Meta Pixel =====
+    // Metadata útil para el CRM / atribución
+    const payload = {
+      ...data,
+      source: window.location.href,
+      fbp: getCookie('_fbp'),
+      fbc: getCookie('_fbc'),
+      timestamp: new Date().toISOString(),
+    };
+
+    // Evento de conversión Meta Pixel
     if (typeof fbq === 'function') {
       fbq('track', 'Lead', {
-        content_name: 'Free Strategy Plan',
-        content_category: 'B2B Lead',
+        content_name: 'Diagnóstico gratis Aurun',
+        content_category: data.rubro || 'B2B Lead',
       });
     }
 
-    // TODO: enviar `data` a tu backend / CRM / webhook (n8n, email, etc.)
-    // Ejemplo:
-    // fetch('/api/lead', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) });
-    console.log('Lead capturado:', data);
+    // Envío al webhook de n8n (no bloqueamos la UX del usuario)
+    if (WEBHOOK_URL) {
+      try {
+        await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      } catch (err) {
+        console.error('No se pudo enviar el lead al webhook:', err);
+      }
+    } else {
+      console.log('Lead capturado (falta WEBHOOK_URL):', payload);
+    }
 
     // Feedback visual
     form.style.display = 'none';
