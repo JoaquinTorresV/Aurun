@@ -1,8 +1,7 @@
 // ===== Aurun Landing — envío de leads + Meta Pixel =====
 
-// 👉 Pega aquí la URL del webhook de n8n (en el servidor de Aurun).
-//    Mientras esté vacío, el formulario funciona igual pero no envía a ningún lado.
-const WEBHOOK_URL = "";
+// Endpoint del bot (Maya) que recibe el lead, lo guarda en Postgres y dispara la plantilla.
+const WEBHOOK_URL = "https://whatsapp.jqsystem.es/register";
 
 (function () {
   const form = document.getElementById('strategyForm');
