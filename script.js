@@ -14,8 +14,11 @@ const WEBHOOK_URL = "https://whatsapp.jqsystem.es/register";
     return m ? m.pop() : '';
   }
 
+  let submitting = false; // evita doble envío por doble clic
+
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
+    if (submitting) return;
 
     // Validación de campos requeridos
     const required = form.querySelectorAll('[required]');
@@ -29,6 +32,11 @@ const WEBHOOK_URL = "https://whatsapp.jqsystem.es/register";
       }
     });
     if (!valid) return;
+
+    // bloquear reenvíos desde el primer submit válido
+    submitting = true;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Enviando…'; }
 
     const data = Object.fromEntries(new FormData(form).entries());
 
