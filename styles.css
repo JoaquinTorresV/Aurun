@@ -58,7 +58,8 @@ a { text-decoration: none; color: inherit; }
 .logo { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 20px; color: var(--ink); }
 .logo .mark { color: var(--teal); }
 .logo b { color: var(--teal); font-weight: 700; }
-.header .logo img { width: 132px; height: auto; }
+.header .logo img { width: 156px; height: auto; }
+.footer .logo img { width: 190px; height: auto; }
 .header-right { display: flex; align-items: center; gap: 26px; }
 .social-proof { display: flex; align-items: center; gap: 10px; }
 .avatars { display: flex; }
@@ -153,6 +154,16 @@ section { padding: 84px 0; }
 }
 .feature h4 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
 .feature p { color: var(--muted); font-size: 14px; }
+
+/* ===== Services on white background ===== */
+.services { background: var(--white); }
+.services .feature .ico { background: #FFF0E8; color: #D96528; }
+.services .badge { color: #C95E33; background: #FFF0E8; }
+.services .btn-teal {
+  background: var(--orange);
+  box-shadow: 0 10px 22px rgba(249,120,38,.28);
+}
+.services .btn-teal:hover { background: #E5681D; }
 
 /* ===== Dashboard mockups ===== */
 .mockups { position: relative; }
